@@ -68,3 +68,47 @@ it, or start a new message, and it will.
 
 Temporary add-ons are removed when Thunderbird restarts; reload via the
 same debugging page when needed during development.
+
+## Publishing
+
+Two GitHub Actions workflows (using [kewisch/action-web-ext](https://github.com/kewisch/action-web-ext))
+handle packaging and publishing:
+
+- [`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs `web-ext lint`
+  and `web-ext build` on every push to `main` and on pull requests, and
+  uploads the packaged `.xpi` as a workflow artifact.
+- [`.github/workflows/publish.yml`](.github/workflows/publish.yml) runs when
+  a GitHub Release is published: it lints, builds, and submits the `.xpi` to
+  [addons.thunderbird.net](https://addons.thunderbird.net) (ATN) as a
+  **listed** (publicly searchable) add-on, then attaches the signed `.xpi`
+  to the release if ATN's review finishes in time.
+
+### One-time setup
+
+1. **Create ATN API credentials.** Sign in to
+   [addons.thunderbird.net](https://addons.thunderbird.net), go to
+   **Developer Hub → Manage API Keys**, and generate a JWT issuer/secret
+   pair.
+2. **Add them as repo secrets** (Settings → Secrets and variables →
+   Actions): `ATN_SIGN_KEY` (issuer) and `ATN_SIGN_SECRET` (secret).
+3. **Create the initial ATN listing manually.** ATN's API can add new
+   *versions* to an existing listed add-on, but can't create the initial
+   public listing (name, summary, category, icon, first upload) — that part
+   of the review requires the [ATN submission
+   wizard](https://addons.thunderbird.net/developers/addon/submit/upload-listed).
+   Do this once, by hand, for version `1.0.0`. After that, this repo's
+   `publish.yml` workflow can submit every subsequent version.
+
+### Releasing a new version
+
+1. Bump `version` in [`manifest.json`](manifest.json) and commit.
+2. Tag the commit (`git tag vX.Y.Z && git push origin vX.Y.Z`) and create a
+   GitHub Release for that tag (via the GitHub UI, or
+   `gh release create vX.Y.Z`).
+3. Publishing the release triggers `publish.yml`, which submits the new
+   version to ATN for review.
+
+Listed add-ons go through human review on ATN, which can take longer than
+the workflow waits — that's expected and not treated as a failure. Check
+the add-on's status on ATN directly if the signed `.xpi` isn't attached to
+the release.

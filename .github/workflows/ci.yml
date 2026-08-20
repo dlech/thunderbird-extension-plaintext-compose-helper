@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    name: Lint and build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: web-ext lint
+        uses: kewisch/action-web-ext@v2
+        with:
+          cmd: lint
+          source: .
+          channel: listed
+
+      - name: web-ext build
+        id: web-ext-build
+        uses: kewisch/action-web-ext@v2
+        with:
+          cmd: build
+          source: .
+          filename: "{name}-{version}.xpi"
+          ignoreFiles: '["README.md", "LICENSE"]'
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: extension
+          path: ${{ steps.web-ext-build.outputs.target }}

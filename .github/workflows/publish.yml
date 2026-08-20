@@ -1,0 +1,59 @@
+name: Publish
+
+# Triggered when a GitHub Release is published. Create a version tag (matching
+# the "version" in manifest.json) and publish a release for it to kick this
+# off; see README.md for the full release process, including the one-time
+# manual step of creating the initial listing on addons.thunderbird.net.
+on:
+  release:
+    types: [published]
+
+jobs:
+  sign:
+    name: Sign and publish to addons.thunderbird.net
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: web-ext lint
+        uses: kewisch/action-web-ext@v2
+        with:
+          cmd: lint
+          source: .
+          channel: listed
+
+      - name: web-ext build
+        id: web-ext-build
+        uses: kewisch/action-web-ext@v2
+        with:
+          cmd: build
+          source: .
+          filename: "{name}-{version}.xpi"
+          ignoreFiles: '["README.md", "LICENSE"]'
+
+      - name: web-ext sign ATN
+        id: web-ext-sign
+        uses: kewisch/action-web-ext@v2
+        with:
+          cmd: sign
+          source: ${{ steps.web-ext-build.outputs.target }}
+          channel: listed
+          apiUrlPrefix: "https://addons.thunderbird.net/api/v4"
+          apiKey: ${{ secrets.ATN_SIGN_KEY }}
+          apiSecret: ${{ secrets.ATN_SIGN_SECRET }}
+
+      # Listed submissions go through human review, which can take longer
+      # than this job waits, so a signed .xpi isn't always available by the
+      # time this step runs. That's not a failure: the version is queued for
+      # review on ATN either way. When a signed .xpi *is* ready, attach it to
+      # the GitHub release too, as a convenient direct-download mirror.
+      - name: Attach signed xpi to release
+        if: steps.web-ext-sign.outputs.target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} \
+            ${{ steps.web-ext-sign.outputs.target }}
