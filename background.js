@@ -41,10 +41,18 @@ async function getSettings(tabId) {
 }
 
 browser.runtime.onMessage.addListener((message, sender) => {
-  if (!message || message.command !== "getSettings") {
+  if (!message) {
     return;
   }
-  return getSettings(sender.tab.id);
+  if (message.command === "getSettings") {
+    return getSettings(sender.tab.id);
+  }
+  if (message.command === "setTitle") {
+    browser.composeAction.setTitle({
+      tabId: sender.tab.id,
+      title: message.visible ? "Hide ruler" : "Show ruler",
+    });
+  }
 });
 
 browser.composeAction.onClicked.addListener((tab) => {

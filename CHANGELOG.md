@@ -9,6 +9,10 @@ a single line can't cover it. -->
 
 ## [Unreleased]
 
+### Changed
+
+- Compose button title now reads "Show ruler" / "Hide ruler" instead of "Toggle ruler".
+
 ## [1.0.1]
 
 ### Fixed

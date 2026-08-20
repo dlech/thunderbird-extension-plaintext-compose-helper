@@ -34,6 +34,7 @@
 
   function updateVisibility() {
     root.setProperty("--text-ruler-display", visible ? "block" : "none");
+    browser.runtime.sendMessage({ command: "setTitle", visible });
   }
 
   updateOffset();
