@@ -36,16 +36,14 @@ node also means Thunderbird removes it automatically the instant the addon
 is disabled — the same lifecycle handling as `tabs.insertCSS` — with no
 cleanup code needed on our end.
 
-## Known limitation: windows opened before the addon is enabled
-
 `registerScripts()` only adds an entry to a registry that Thunderbird
-checks when a compose window *opens*; it doesn't walk existing windows and
-inject into them (confirmed by reading Thunderbird's own implementation in
-`mail/components/extensions/parent/ext-scripting-tb.js`). There's no
-supported API to inject into a compose editor that's already open, so if
-you enable the addon (or reload it during development) while a compose
-window is already open, that window won't get the ruler. Close and reopen
-it, or start a new message, and it will.
+checks when a compose window *opens*, so it doesn't retroactively cover
+windows that were already open when the addon (re)started. `background.js`
+handles that case itself: on startup it queries for existing
+`messageCompose` tabs and injects `compose.js`/`ruler.css` into each one
+directly via `browser.scripting.executeScript`/`insertCSS`. `compose.js`
+guards against running twice in the same window in case that manual
+injection races with a registered one.
 
 ## Loading it in Thunderbird for testing
 
@@ -65,6 +63,9 @@ it, or start a new message, and it will.
    for "Plain Text Compose Helper") to change the column count, line
    color, or whether the ruler is shown by default — changes apply
    immediately to any already-open compose window.
+9. With a plain-text compose window still open, reload the add-on from the
+   debugging page and confirm that window keeps (or regains) its ruler
+   instead of needing to be closed and reopened.
 
 Temporary add-ons are removed when Thunderbird restarts; reload via the
 same debugging page when needed during development.

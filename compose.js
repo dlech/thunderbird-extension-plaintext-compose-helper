@@ -1,4 +1,12 @@
 (async () => {
+  // Guards against running twice in the same window: the registered compose
+  // script and the manual executeScript fallback in background.js can both
+  // fire for a tab that was already open when the extension (re)started.
+  if (window.__textRulerInjected) {
+    return;
+  }
+  window.__textRulerInjected = true;
+
   const settings = await browser.runtime.sendMessage({ command: "getSettings" });
   if (!settings || !settings.isPlainText) {
     return;
