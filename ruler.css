@@ -1,0 +1,19 @@
+:root {
+  --text-ruler-display: none;
+  --text-ruler-color: #ff0000;
+  --text-ruler-offset: 80ch;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: var(--text-ruler-offset);
+  width: 1px;
+  background-color: var(--text-ruler-color);
+  opacity: 0.4;
+  pointer-events: none;
+  z-index: 2147483647;
+  display: var(--text-ruler-display);
+}

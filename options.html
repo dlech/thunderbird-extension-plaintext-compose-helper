@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      :root {
+        --bg: #fff;
+        --fg: #0c0c0d;
+        --border: #ccc;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #2a2a2e;
+          --fg: #f9f9fa;
+          --border: #4a4a4f;
+        }
+      }
+      body {
+        font-family: sans-serif;
+        margin: 1em;
+        min-width: 260px;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      label {
+        display: block;
+        margin-bottom: 0.75em;
+      }
+      input[type="number"] {
+        width: 4em;
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <label>
+      <input type="checkbox" id="enabled" />
+      Show ruler by default in plain-text messages
+    </label>
+    <label>
+      Column: <input type="number" id="columns" min="20" max="300" step="1" />
+    </label>
+    <label>
+      Line color: <input type="color" id="color" />
+    </label>
+    <script src="options.js"></script>
+  </body>
+</html>

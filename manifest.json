@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Plain Text Compose Helper",
+  "version": "1.0.0",
+  "description": "Adds a ruler for composing plain-text emails.",
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "plaintext-compose-helper@d.lech",
+      "strict_min_version": "128.0"
+    }
+  },
+  "permissions": ["scripting", "compose", "storage"],
+  "background": {
+    "page": "background.html"
+  },
+  "compose_action": {
+    "default_title": "Toggle ruler",
+    "default_icon": "icons/ruler.svg"
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  },
+  "icons": {
+    "48": "icons/ruler.svg",
+    "96": "icons/ruler.svg"
+  }
+}
