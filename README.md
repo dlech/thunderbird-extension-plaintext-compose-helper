@@ -93,11 +93,18 @@ handle packaging and publishing:
    Actions): `ATN_SIGN_KEY` (issuer) and `ATN_SIGN_SECRET` (secret).
 3. **Create the initial ATN listing manually.** ATN's API can add new
    *versions* to an existing listed add-on, but can't create the initial
-   public listing (name, summary, category, icon, first upload) — that part
-   of the review requires the [ATN submission
+   public listing (name, summary, category, first upload) — that part of
+   the review requires the [ATN submission
    wizard](https://addons.thunderbird.net/developers/addon/submit/upload-listed).
    Do this once, by hand, for version `1.0.0`. After that, this repo's
    `publish.yml` workflow can submit every subsequent version.
+
+   ATN takes the listing icon straight from the extension's own
+   `manifest.json` `icons` map at submission time — there's no separate
+   upload field for it in the developer hub. `manifest.json` includes a
+   `128` entry ([`icons/store-icon-128.png`](icons/store-icon-128.png), a
+   PNG rendition of `icons/ruler.svg`) for this; a version submitted
+   without it won't get a listing icon.
 
 ### Releasing a new version
 

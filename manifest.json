@@ -23,6 +23,7 @@
   },
   "icons": {
     "48": "icons/ruler.svg",
-    "96": "icons/ruler.svg"
+    "96": "icons/ruler.svg",
+    "128": "icons/store-icon-128.png"
   }
 }
