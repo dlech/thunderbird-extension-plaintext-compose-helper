@@ -9,6 +9,8 @@ a single line can't cover it. -->
 
 ## [Unreleased]
 
+## [1.0.1]
+
 ### Fixed
 
 - Ruler now appears in compose windows already open at extension startup.
