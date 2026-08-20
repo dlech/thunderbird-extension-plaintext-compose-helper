@@ -6,18 +6,20 @@ mailing-list and patch-submission conventions (see, for example,
 It's meant to grow into a small toolbox of aids for that kind of email
 rather than a single fixed feature.
 
-The first feature: a vertical column-ruler line inside the message compose
-editor while writing a **plain-text** email. The ruler is hidden
-automatically in HTML compose windows, since column wrapping doesn't apply
-there.
-
 ## Features
 
-- Ruler line at column 80 by default (configurable).
+- Ruler line at column 80 by default (configurable), shown while writing a
+  **plain-text** email and hidden automatically in HTML compose windows,
+  since column wrapping doesn't apply there.
 - Toolbar button in the compose window to toggle the ruler on/off for that
   window.
 - Options page (column count, line color, enabled-by-default) under the
   extension's settings.
+- Options page shows a good/check-this badge for two Config-Editor-only
+  settings kernel.org recommends changing (`mailnews.send_plaintext_flowed`,
+  `mailnews.wraplength`), with an explanation when either is at a value the
+  guide advises against, a copy button for the preference name, and a link
+  to the guide.
 
 ## How it works
 
@@ -45,6 +47,18 @@ directly via `browser.scripting.executeScript`/`insertCSS`. `compose.js`
 guards against running twice in the same window in case that manual
 injection races with a registered one.
 
+`mailnews.send_plaintext_flowed` and `mailnews.wraplength` have no normal
+preferences UI, but Thunderbird exposes read-only access to them (plus a
+change notification) as `messengerSettings.messagePlainTextFlowedOutputEnabled`
+and `messengerSettings.messageLineLengthLimit` — standard, non-privileged
+WebExtension APIs (Thunderbird 137+) that only need the `messengerSettings`
+permission. There's no `set()` for either, so the options page can only
+flag problems and link to kernel.org's guide, not change the values itself.
+It isn't confirmed whether each setting's `onChange` event fires for edits
+made directly in the Config Editor (as opposed to only for changes made
+through this same API), so `options.js` also re-reads both values on the
+page's `visibilitychange` event as a fallback.
+
 ## Loading it in Thunderbird for testing
 
 1. Open Thunderbird.
@@ -63,9 +77,17 @@ injection races with a registered one.
    for "Plain Text Compose Helper") to change the column count, line
    color, or whether the ruler is shown by default — changes apply
    immediately to any already-open compose window.
-9. With a plain-text compose window still open, reload the add-on from the
-   debugging page and confirm that window keeps (or regains) its ruler
-   instead of needing to be closed and reopened.
+9. On the same Preferences page, confirm the "flowed"/wrap-limit status
+   text matches the actual values in the Config Editor and that each badge
+   reads "good" or "check this" correctly for that value. Then change a
+   value in the Config Editor, switch away from the Preferences page and
+   back (e.g. to another Add-ons Manager category) to confirm the badge
+   picks up the new value. Click each **Copy** button and paste into the
+   Config Editor's search field to confirm it copies the exact preference
+   name.
+10. With a plain-text compose window still open, reload the add-on from the
+    debugging page and confirm that window keeps (or regains) its ruler
+    instead of needing to be closed and reopened.
 
 Temporary add-ons are removed when Thunderbird restarts; reload via the
 same debugging page when needed during development.

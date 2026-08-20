@@ -7,12 +7,14 @@
         --bg: #fff;
         --fg: #0c0c0d;
         --border: #ccc;
+        --link: #0060df;
       }
       @media (prefers-color-scheme: dark) {
         :root {
           --bg: #2a2a2e;
           --fg: #f9f9fa;
           --border: #4a4a4f;
+          --link: #8ab4ff;
         }
       }
       body {
@@ -21,6 +23,9 @@
         min-width: 260px;
         background: var(--bg);
         color: var(--fg);
+      }
+      a {
+        color: var(--link);
       }
       label {
         display: block;
@@ -31,6 +36,56 @@
         background: var(--bg);
         color: var(--fg);
         border: 1px solid var(--border);
+      }
+      hr {
+        border: none;
+        border-top: 1px solid var(--border);
+        margin: 1.25em 0;
+      }
+      .setting-status {
+        margin-bottom: 0.25em;
+      }
+      .pref-id {
+        margin: 0 0 0.75em;
+        font-size: 0.85em;
+      }
+      .pref-id code {
+        background: var(--border);
+        border-radius: 0.3em;
+        padding: 0.05em 0.35em;
+      }
+      .copy {
+        font-size: 0.85em;
+        background: var(--bg);
+        color: var(--fg);
+        border: 1px solid var(--border);
+        border-radius: 0.3em;
+        cursor: pointer;
+      }
+      .badge {
+        display: inline-block;
+        padding: 0.1em 0.5em;
+        border-radius: 0.75em;
+        font-size: 0.85em;
+        cursor: help;
+      }
+      .badge.good {
+        color: #0d7a1f;
+        background: #e3f6e6;
+      }
+      .badge.bad {
+        color: #8a5300;
+        background: #fdecd2;
+      }
+      @media (prefers-color-scheme: dark) {
+        .badge.good {
+          color: #7ee787;
+          background: #1c3a20;
+        }
+        .badge.bad {
+          color: #ffb84d;
+          background: #3a2c12;
+        }
       }
     </style>
   </head>
@@ -45,6 +100,37 @@
     <label>
       Line color: <input type="color" id="color" />
     </label>
+    <hr />
+    <p>
+      Two settings that matter for patch/mailing-list mail live in
+      Thunderbird's Config Editor rather than its normal preferences.
+      Thunderbird only lets extensions read them, not change them, so use
+      the
+      <a
+        href="https://www.kernel.org/doc/html/latest/process/email-clients.html#thunderbird-gui"
+        target="_blank"
+        rel="noreferrer"
+        >kernel.org guide</a
+      >
+      to change them there if the badge below flags a problem. Copy the
+      preference name into the Config Editor's search field to find it.
+    </p>
+    <p class="setting-status">
+      Flowed plain text output: <span id="flowedStatus">–</span>
+      <span class="badge" id="flowedBadge"></span>
+    </p>
+    <p class="pref-id">
+      <code>mailnews.send_plaintext_flowed</code>
+      <button type="button" class="copy" data-pref="mailnews.send_plaintext_flowed">Copy</button>
+    </p>
+    <p class="setting-status">
+      Outgoing line length limit: <span id="wrapStatus">–</span>
+      <span class="badge" id="wrapBadge"></span>
+    </p>
+    <p class="pref-id">
+      <code>mailnews.wraplength</code>
+      <button type="button" class="copy" data-pref="mailnews.wraplength">Copy</button>
+    </p>
     <script src="options.js"></script>
   </body>
 </html>

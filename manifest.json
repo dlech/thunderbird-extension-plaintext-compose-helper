@@ -6,10 +6,10 @@
   "browser_specific_settings": {
     "gecko": {
       "id": "plaintext-compose-helper@d.lech",
-      "strict_min_version": "128.0"
+      "strict_min_version": "137.0"
     }
   },
-  "permissions": ["scripting", "compose", "storage"],
+  "permissions": ["scripting", "compose", "storage", "messengerSettings"],
   "background": {
     "page": "background.html"
   },

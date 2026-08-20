@@ -9,8 +9,13 @@ a single line can't cover it. -->
 
 ## [Unreleased]
 
+### Added
+
+- Options page shows a good/check-this badge for two Config-Editor-only mail settings.
+
 ### Changed
 
+- Now requires Thunderbird 137+, for the two settings above.
 - Compose button title now reads "Show ruler" / "Hide ruler" instead of "Toggle ruler".
 
 ## [1.0.1]
