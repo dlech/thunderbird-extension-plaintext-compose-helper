@@ -9,6 +9,8 @@ a single line can't cover it. -->
 
 ## [Unreleased]
 
+## [1.1.0]
+
 ### Added
 
 - Options page shows a good/check-this badge for two Config-Editor-only mail settings.
